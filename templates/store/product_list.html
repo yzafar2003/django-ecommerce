@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{% if category %}{{ category.name }}{% else %}Products{% endif %}{% endblock %}
+{% block content %}
+<h1>
+  {% if q %}Results for "{{ q }}"{% elif category %}{{ category.name }}{% else %}All products{% endif %}
+</h1>
+
+{% if page.object_list %}
+  <ul class="grid">
+    {% for product in page %}
+      <li class="card">
+        <a href="{{ product.get_absolute_url }}">
+          {% if product.image %}
+            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+          {% else %}
+            <div class="placeholder">{{ product.name|slice:":1" }}</div>
+          {% endif %}
+          <h2>{{ product.name }}</h2>
+        </a>
+        <p class="price">${{ product.price }}</p>
+        {% if not product.in_stock %}<p class="muted">Out of stock</p>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+
+  {% if page.has_other_pages %}
+    <nav class="pager">
+      {% if page.has_previous %}<a href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ page.previous_page_number }}">&laquo; Prev</a>{% endif %}
+      <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+      {% if page.has_next %}<a href="?{% if q %}q={{ q|urlencode }}&{% endif %}page={{ page.next_page_number }}">Next &raquo;</a>{% endif %}
+    </nav>
+  {% endif %}
+{% else %}
+  <p class="muted">No products found.</p>
+{% endif %}
+{% endblock %}

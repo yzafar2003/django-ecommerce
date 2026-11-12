@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }}{% endblock %}
+{% block content %}
+<div class="detail">
+  <div>
+    {% if product.image %}
+      <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% else %}
+      <div class="placeholder big">{{ product.name|slice:":1" }}</div>
+    {% endif %}
+  </div>
+  <div>
+    <p><a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a></p>
+    <h1>{{ product.name }}</h1>
+    <p class="price big">${{ product.price }}</p>
+    <p>{{ product.description|linebreaksbr }}</p>
+
+    {% if product.in_stock %}
+      <p class="muted">{{ product.stock }} in stock</p>
+      <form action="{% url 'cart:add' product.id %}" method="post" class="add-form">
+        {% csrf_token %}
+        {{ form.quantity }}
+        {{ form.override }}
+        <button type="submit">Add to cart</button>
+      </form>
+    {% else %}
+      <p class="muted">Out of stock</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
