@@ -1,0 +1,12 @@
+Hi {{ order.first_name }},
+
+Thanks for your order. Here's what you bought:
+
+{% for item in order.items.all %}  {{ item.quantity }} x {{ item.product.name }}  ${{ item.total }}
+{% endfor %}
+Total: ${{ order.total }}
+
+We'll ship to:
+{{ order.address }}, {{ order.city }} {{ order.postal_code }}
+
+Order number: {{ order.id }}

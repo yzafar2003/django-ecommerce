@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+<div class="two-col">
+  <form method="post" class="form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Place order</button>
+    {% if not user.is_authenticated %}
+      <p class="muted">Checking out as a guest. <a href="{% url 'login' %}?next={% url 'orders:checkout' %}">Log in</a> to keep track of your orders.</p>
+    {% endif %}
+  </form>
+  <aside class="summary">
+    <h2>Order summary</h2>
+    <ul>
+      {% for line in lines %}
+        <li>{{ line.quantity }} x {{ line.product.name }} <span>${{ line.total }}</span></li>
+      {% endfor %}
+    </ul>
+    <p class="total">Total <strong>${{ cart_total }}</strong></p>
+  </aside>
+</div>
+{% endblock %}
