@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Cart{% endblock %}
+{% block content %}
+<h1>Your cart</h1>
+{% if lines %}
+  <table class="table">
+    <thead><tr><th>Product</th><th>Price</th><th>Quantity</th><th>Total</th><th></th></tr></thead>
+    <tbody>
+      {% for line in lines %}
+        <tr>
+          <td><a href="{{ line.product.get_absolute_url }}">{{ line.product.name }}</a></td>
+          <td>${{ line.price }}</td>
+          <td>
+            <form action="{% url 'cart:add' line.product.id %}" method="post" class="inline">
+              {% csrf_token %}
+              {{ line.form.quantity }}
+              {{ line.form.override }}
+              <button type="submit" class="small">Update</button>
+            </form>
+          </td>
+          <td>${{ line.total }}</td>
+          <td>
+            <form action="{% url 'cart:remove' line.product.id %}" method="post" class="inline">
+              {% csrf_token %}
+              <button type="submit" class="link">Remove</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot><tr><th colspan="3">Total</th><th>${{ cart_total }}</th><th></th></tr></tfoot>
+  </table>
+  <p class="actions">
+    <a href="{% url 'store:product_list' %}">Continue shopping</a>
+    <a class="button" href="{% url 'orders:checkout' %}">Checkout</a>
+  </p>
+{% else %}
+  <p class="muted">Your cart is empty. <a href="{% url 'store:product_list' %}">Browse products</a>.</p>
+{% endif %}
+{% endblock %}
